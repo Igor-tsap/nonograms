@@ -11,7 +11,7 @@ class Attempts(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     puzzle_id = Column(Integer, ForeignKey("puzzles.id"))
-    status = Column(String(50), default="in_progress")  # e.g., in_progress, completed
+    status = Column(String(50), default="in_progress")
     current_grid = Column(JSON)
     time_spent = Column(Integer, default=0)  # in seconds
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
