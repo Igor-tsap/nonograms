@@ -14,3 +14,4 @@ class Users(Base):
 
 
     puzzles = relationship("Puzzles", back_populates="author")
+    attempts = relationship("Attempts", back_populates="user")

@@ -21,3 +21,4 @@ class Puzzles(Base):
     updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     author = relationship("Users", back_populates="puzzles")
+    attempts = relationship("Attempts", back_populates="puzzle")
