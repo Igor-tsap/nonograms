@@ -9,10 +9,11 @@ class Puzzles(Base):
     __tablename__ = "puzzles"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
+    title = Column(String(255), index=True)
     author_id = Column(Integer, ForeignKey("users.id"))
-    size = Column(String, index=True)
-    difficulty = Column(String, index=True)
+    hor_size = Column(Integer, index=True)
+    ver_size = Column(Integer, index=True)
+    difficulty = Column(String(255), index=True)
     solution_grid = Column(JSON)
     row_clues = Column(JSON)
     col_clues = Column(JSON)
