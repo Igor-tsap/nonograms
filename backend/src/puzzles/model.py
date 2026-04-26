@@ -1,4 +1,4 @@
-from src.database.core import Base
+from database.core import Base
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, JSON
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
