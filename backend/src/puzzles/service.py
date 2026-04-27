@@ -1,9 +1,6 @@
-from database.core import Base
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, JSON
-from sqlalchemy.orm import relationship
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from model import Puzzles
-from database.core import AsyncSession
 from schema import PuzzleCreate, PuzzleUpdate
 from utils import generate_clues, calculate_difficulty
 
