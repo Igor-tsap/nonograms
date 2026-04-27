@@ -48,4 +48,3 @@ async def delete_puzzle(puzzle_id: int, db: AsyncSession = Depends(get_session))
 
     deleted_puzzle = await service.delete_puzzle(db, db_puzzle)
     return deleted_puzzle
-
