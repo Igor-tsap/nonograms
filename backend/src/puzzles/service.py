@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from model import Puzzles
-from schema import PuzzleCreate, PuzzleUpdate
-from utils import generate_clues, calculate_difficulty
+from .model import Puzzles
+from .schema import PuzzleCreate, PuzzleUpdate
+from .utils import generate_clues, calculate_difficulty
 
 
 
