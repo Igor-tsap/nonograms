@@ -42,25 +42,20 @@ async def create_puzzle(db: AsyncSession, puzzle: PuzzleCreate):
     await db.refresh(db_puzzle)
     return db_puzzle
 
-async def update_puzzle(db: AsyncSession, puzzle_id: int, puzzle: PuzzleUpdate):
-    db_puzzle = await get_puzzle(db, puzzle_id)
-    if not db_puzzle:
-        return None
+async def update_puzzle(db: AsyncSession, db_puzzle: Puzzles, puzzle: PuzzleUpdate):
     clean_data = puzzle.model_dump(exclude_unset=True)
     if "solution_grid" in clean_data:
         row_clues, col_clues = generate_clues(clean_data["solution_grid"])
         clean_data["row_clues"] = row_clues
         clean_data["col_clues"] = col_clues
+        clean_data["difficulty"] = calculate_difficulty(clean_data["solution_grid"])
     for key, value in clean_data.items():
         setattr(db_puzzle, key, value)
     await db.commit()
     await db.refresh(db_puzzle)
     return db_puzzle
 
-async def delete_puzzle(db: AsyncSession, puzzle_id: int):
-    db_puzzle = await get_puzzle(db, puzzle_id)
-    if not db_puzzle:
-        return None
+async def delete_puzzle(db: AsyncSession, db_puzzle: Puzzles):
     await db.delete(db_puzzle)
     await db.commit()
     return db_puzzle
