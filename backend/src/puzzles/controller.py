@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from database.core import get_session
 from . import service
 from .schema import PuzzleCreate, PuzzleUpdate, PuzzleResponse
+from auth import require_creator
 
 router = APIRouter(prefix="/api/puzzles", tags=["puzzles"])
 
@@ -28,11 +29,11 @@ async def read_puzzle(puzzle_id: int, db: AsyncSession = Depends(get_session)):
     return db_puzzle
 
 @router.post("/", response_model=PuzzleResponse, status_code=201)
-async def create_puzzle(puzzle: PuzzleCreate, db: AsyncSession = Depends(get_session)):
+async def create_puzzle(puzzle: PuzzleCreate, db: AsyncSession = Depends(get_session), creator = Depends(require_creator)):
     return await service.create_puzzle(db, puzzle)
 
 @router.patch("/{puzzle_id}", response_model=PuzzleResponse)
-async def update_puzzle(puzzle_id: int, puzzle: PuzzleUpdate, db: AsyncSession = Depends(get_session)):
+async def update_puzzle(puzzle_id: int, puzzle: PuzzleUpdate, db: AsyncSession = Depends(get_session), creator = Depends(require_creator)):
     db_puzzle = await service.get_puzzle(db, puzzle_id)
     if not db_puzzle:
         raise HTTPException(status_code=404, detail="Puzzle not found")
@@ -41,7 +42,7 @@ async def update_puzzle(puzzle_id: int, puzzle: PuzzleUpdate, db: AsyncSession =
     return updated_puzzle
 
 @router.delete("/{puzzle_id}", response_model=PuzzleResponse)
-async def delete_puzzle(puzzle_id: int, db: AsyncSession = Depends(get_session)):
+async def delete_puzzle(puzzle_id: int, db: AsyncSession = Depends(get_session), creator = Depends(require_creator)):
     db_puzzle = await service.get_puzzle(db, puzzle_id)
     if not db_puzzle:
         raise HTTPException(status_code=404, detail="Puzzle not found")
