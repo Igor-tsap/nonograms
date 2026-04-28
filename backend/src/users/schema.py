@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from typing import Optional
 
 class UserCreate(BaseModel):
     username: str
@@ -23,5 +22,3 @@ class Token(BaseModel):
     is_creator: int
     token: str
     
-class TokenData(BaseModel):
-    username: Optional[str] = None
