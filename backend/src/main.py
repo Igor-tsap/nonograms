@@ -5,6 +5,8 @@ from puzzles.model import Puzzles
 from users.model import Users
 from attempts.model import Attempts
 from puzzles.controller import router as puzzles_router
+from users.controller import router as users_router
+from attempts.controller import router as attempts_router
 
 
 
@@ -17,6 +19,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Nonograms API", lifespan=lifespan)
 
 app.include_router(puzzles_router)
+app.include_router(users_router)
+app.include_router(attempts_router)
 
 
 
