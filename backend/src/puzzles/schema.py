@@ -21,6 +21,7 @@ class PuzzleResponse(BaseModel):
     difficulty: str
     row_clues: List[List[int]]
     col_clues: List[List[int]]
+    solution_grid: List[List[int]]
     author_username: Optional[str] = None
 
     class Config:
