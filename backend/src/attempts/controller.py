@@ -48,7 +48,7 @@ async def update_attempt(attempt_id: int, attempt: AttemptUpdate, db: AsyncSessi
         if db_attempt.user_id != current_user.id:
             raise HTTPException(status_code=403, detail="You are not allowed to update this attempt")
         puzzle = await get_puzzle(db, db_attempt.puzzle_id)
-        updated_attempt = await service.update_attempt(db, db_attempt, attempt, puzzle)
+        updated_attempt = await service.update_attempt(db, db_attempt, attempt, puzzle, current_user.id)
         return updated_attempt
     except HTTPException:
         raise

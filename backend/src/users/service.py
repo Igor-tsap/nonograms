@@ -14,9 +14,12 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 
+print("SECRET_KEY:", SECRET_KEY)
+print("ALGORITHM:", ALGORITHM)
+
 async def register_user(db: AsyncSession, user: UserCreate):
     hashed_password = pwd_context.hash(user.password)
-    db_user = Users(username=user.username, password=hashed_password)
+    db_user = Users(username=user.username, password=hashed_password, is_creator=user.is_creator)
     db.add(db_user)
     await db.commit()
     await db.refresh(db_user)
