@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getPuzzles, deletePuzzle } from "@/lib/api";
+import { getMyPuzzles, deletePuzzle } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 
 interface Puzzle {
@@ -28,8 +28,7 @@ export default function MyPuzzlesPage() {
   const load = async () => {
     setLoading(true);
     try {
-      const data = await getPuzzles();
-      // filter to only current user's puzzles — ideally backend has /api/puzzles/mine
+      const data = await getMyPuzzles();
       setPuzzles(data);
     } finally {
       setLoading(false);
@@ -37,6 +36,10 @@ export default function MyPuzzlesPage() {
   };
 
   useEffect(() => { load(); }, []);
+
+  const handleEdit = (id: number) => {
+    window.location.href = `/my-puzzles/${id}/edit`;
+  }
 
   const handleDelete = async (id: number) => {
     if (!confirm("Delete this puzzle?")) return;
@@ -91,6 +94,12 @@ export default function MyPuzzlesPage() {
                 >
                   View
                 </Link>
+                <button
+                  onClick={() => handleEdit(puzzle.id)}
+                  className="text-sm text-gray-600 hover:text-black transition-colors"
+                >
+                  Edit
+                </button>
                 <button
                   onClick={() => handleDelete(puzzle.id)}
                   className="text-sm text-red-500 hover:text-red-400 transition-colors"

@@ -1,11 +1,13 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import AuthModal from "./AuthModal";
 
 export default function Navbar() {
   const { user, logout, isCreator } = useAuth();
+  const router = useRouter();
   const [showAuth, setShowAuth] = useState(false);
 
   return (
@@ -35,6 +37,7 @@ export default function Navbar() {
                 <span className="text-gray-600 text-sm">{user.name}</span>
                 <button
                   onClick={logout}
+                  onClickCapture={() => router.push('/')}
                   className="text-sm text-gray-700 hover:text-black transition-colors"
                 >
                   Logout

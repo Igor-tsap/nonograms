@@ -30,6 +30,9 @@ export default function PuzzlePage() {
   const [grid, setGrid] = useState<number[][]>([]);
   const [solved, setSolved] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [completedRowClues, setCompletedRowClues] = useState<Set<string>>(new Set());
+  const [completedColClues, setCompletedColClues] = useState<Set<string>>(new Set());
+  const [painting, setPainting] = useState<number | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -53,17 +56,46 @@ export default function PuzzlePage() {
     load();
   }, [id, user]);
 
-  const toggleCell = useCallback(
-    async (r: number, c: number) => {
-      if (!attempt || solved) return;
-      const newGrid = grid.map((row, ri) =>
-        row.map((cell, ci) => (ri === r && ci === c ? (cell === 1 ? 0 : 1) : cell))
-      );
-      setGrid(newGrid);
-      const updated = await updateAttempt(attempt.id, newGrid);
-      if (updated.status === "completed") setSolved(true);
-    },
-    [grid, attempt, solved]
+  const handleMouseDown = (r: number, c: number, e: React.MouseEvent) => {
+    if (!attempt || solved) return;
+    
+    let newVal: number;
+    if (e.button === 0) { // Left click: Toggle fill (1)
+      newVal = grid[r][c] === 1 ? 0 : 1;
+    } else if (e.button === 2) { // Right click: Toggle mark (2)
+      newVal = grid[r][c] === 2 ? 0 : 2;
+    } else {
+      return;
+    }
+
+    setPainting(newVal);
+    const newGrid = grid.map((row, ri) =>
+      row.map((cell, ci) => (ri === r && ci === c ? newVal : cell))
+    );
+    setGrid(newGrid);
+  };
+
+  const handleMouseEnter = (r: number, c: number) => {
+    if (painting === null || !attempt || solved) return;
+    const newGrid = grid.map((row, ri) =>
+      row.map((cell, ci) => (ri === r && ci === c ? painting : cell))
+    );
+    setGrid(newGrid);
+  };
+
+  const stopPainting = useCallback(async () => {
+    if (painting === null || !attempt || solved) return;
+    setPainting(null);
+
+    // Prepare data for DB: Convert all marks (2) back to 0s
+    const dbGrid = grid.map(row => 
+      row.map(cell => (cell === 2 ? 0 : cell))
+    );
+
+    const updated = await updateAttempt(attempt.id, dbGrid);
+    if (updated.status === "completed") setSolved(true);
+  },
+  [grid, attempt, solved, painting]
   );
 
   if (loading) return <div className="text-center py-20 text-gray-500">Loading...</div>;
@@ -93,53 +125,93 @@ export default function PuzzlePage() {
         </div>
       )}
 
-      <div className="overflow-auto">
+      <div 
+        className="overflow-auto select-none"
+        onMouseLeave={stopPainting}
+        onMouseUp={stopPainting}
+        onContextMenu={(e) => e.preventDefault()}
+      >
         <table className="border-collapse" style={{ fontFamily: "var(--font-mono)" }}>
           <thead>
             {Array.from({ length: maxColClue }).map((_, ci) => (
               <tr key={ci}>
                 <td colSpan={maxRowClue} />
-                {puzzle.col_clues.map((clue, col) => (
-                  <td key={col} className="text-center text-xs text-gray-600 px-1 w-8">
-                    {clue[ci - (maxColClue - clue.length)] ?? ""}
-                  </td>
-                ))}
+                {puzzle.col_clues.map((clue, col) => {
+                  const clueIndex = ci - (maxColClue - clue.length);
+                  const clueKey = `col-${col}-${clueIndex}`;
+                  const isCompleted = completedColClues.has(clueKey);
+                  return (
+                    <td
+                      key={col}
+                      onClick={() => {
+                        const newSet = new Set(completedColClues);
+                        if (newSet.has(clueKey)) {
+                          newSet.delete(clueKey);
+                        } else {
+                          newSet.add(clueKey);
+                        }
+                        setCompletedColClues(newSet);
+                      }}
+                      className={`text-right text-xs pr-2 cursor-pointer select-none transition-colors hover:bg-gray-100 ${
+                        isCompleted ? "line-through text-gray-300" : "text-gray-600 font-bold"
+                      }`}
+                    >
+                      {clue[clueIndex] ?? ""}
+                    </td>
+                  );
+                })}
               </tr>
             ))}
           </thead>
           <tbody>
             {grid.map((row, ri) => (
               <tr key={ri}>
-                {puzzle.row_clues[ri]
-                  .map((n, i) => (
+                {Array.from({ length: maxRowClue - puzzle.row_clues[ri].length }).map((_, i) => (
+                  <td key={`empty-${ri}-${i}`} className="w-6" /> 
+                ))}
+                {puzzle.row_clues[ri].map((n, i) => {
+                  const clueKey = `row-${ri}-${i}`;
+                  const isCompleted = completedRowClues.has(clueKey);
+                  return (
                     <td
                       key={i}
-                      className={`text-right text-xs text-gray-600 pr-1 ${
-                        i === 0 ? `pl-${(maxRowClue - puzzle.row_clues[ri].length) * 4}` : ""
+                      onClick={() => {
+                        const newSet = new Set(completedRowClues);
+                        if (newSet.has(clueKey)) {
+                          newSet.delete(clueKey);
+                        } else {
+                          newSet.add(clueKey);
+                        }
+                        setCompletedRowClues(newSet);
+                      }}
+                      className={`text-right text-xs pr-2 cursor-pointer select-none transition-colors hover:bg-gray-100 ${
+                        isCompleted ? "line-through text-gray-300" : "text-gray-600 font-bold"
                       }`}
                     >
                       {n}
                     </td>
-                  ))
-                  .concat(
-                    Array.from({ length: maxRowClue - puzzle.row_clues[ri].length }).map((_, i) => (
-                      <td key={`empty-${i}`} />
-                    ))
-                  )}
+                  );
+                })}
                 {row.map((cell, ci) => (
                   <td
                     key={ci}
-                    onClick={() => toggleCell(ri, ci)}
+                    onMouseDown={(e) => handleMouseDown(ri, ci, e)}
+                    onMouseEnter={() => handleMouseEnter(ri, ci)}
                     className={`
-                      w-8 h-8
-                      border border-gray-300
-                      cursor-pointer transition-colors select-none
+                      w-8 h-8 border border-gray-300
+                      cursor-pointer transition-colors select-none relative
                       ${cell === 1 ? "bg-black" : "bg-white hover:bg-gray-50"}
-                      ${ci % 5 === 0 ? "border-l-2 !border-l-black" : ""}
-                      ${ri % 5 === 0 ? "border-t-2 !border-t-black" : ""}
-          `}
-    
-                  />
+                      ${ci % 5 === 0 && ci !== 0 ? "border-l-2 !border-l-black" : ""}
+                      ${ri % 5 === 0 && ri !== 0 ? "border-t-2 !border-t-black" : ""}
+                    `}
+                  >
+                    {/* The "Point" / Mark */}
+                    {cell === 2 && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
+                      </div>
+                    )}
+                  </td>
                 ))}
               </tr>
             ))}
