@@ -50,12 +50,41 @@ async def get_puzzles(db: AsyncSession, hor_size=None, ver_size=None, difficulty
 ]
 
 async def get_puzzles_by_creator(db: AsyncSession, creator_id: int):
-    result = await db.execute(select(Puzzles).where(Puzzles.author_id == creator_id))
-    return result.scalars().all()
+    result = await db.execute(select(Puzzles, Users.username.label("author_username"))
+                              .outerjoin(Users, Puzzles.author_id == Users.id)
+                              .where(Puzzles.author_id == creator_id))
+    rows = result.all()
+    return [PuzzleResponse(
+        id=p.id,
+        title=p.title,
+        hor_size=p.hor_size,
+        ver_size=p.ver_size,
+        difficulty=p.difficulty,
+        row_clues=p.row_clues,
+        col_clues=p.col_clues,
+        solution_grid=p.solution_grid,
+        author_username=username
+    ) for p, username in rows]
 
 async def get_puzzle(db: AsyncSession, puzzle_id: int):
-    result = await db.execute(select(Puzzles).where(Puzzles.id == puzzle_id))
-    return result.scalars().first()
+    result = await db.execute(select(Puzzles, Users.username.label("author_username"))
+                              .outerjoin(Users, Puzzles.author_id == Users.id)
+                              .where(Puzzles.id == puzzle_id))
+    row = result.first()
+    if not row:
+        return None
+    p, username = row
+    return PuzzleResponse(
+        id=p.id,
+        title=p.title,
+        hor_size=p.hor_size,
+        ver_size=p.ver_size,
+        difficulty=p.difficulty,
+        row_clues=p.row_clues,
+        col_clues=p.col_clues,
+        solution_grid=p.solution_grid,
+        author_username=username
+    )
 
 async def get_puzzle_by_creator(db: AsyncSession, puzzle_id: int, creator: dict = Depends(get_current_user)):
     result = await db.execute(select(Puzzles).where(Puzzles.id == puzzle_id, Puzzles.author_id == creator.id))
@@ -90,4 +119,3 @@ async def delete_puzzle(db: AsyncSession, db_puzzle: Puzzles):
     await db.delete(db_puzzle)
     await db.commit()
     return db_puzzle
-

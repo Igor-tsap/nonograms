@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 interface Puzzle {
   id: number;
   title: string;
+  author_username: string;
   hor_size: number;
   ver_size: number;
   difficulty: string;
@@ -81,7 +82,7 @@ export default function MyPuzzlesPage() {
               <div>
                 <h2 className="font-semibold text-black mb-1">{puzzle.title}</h2>
                 <div className="text-gray-600 text-sm">
-                  {puzzle.hor_size}×{puzzle.ver_size} ·{" "}
+                  {puzzle.hor_size}×{puzzle.ver_size} · by {puzzle.author_username} ·{" "}
                   <span className={difficultyColor[puzzle.difficulty] || "text-gray-600"}>
                     {puzzle.difficulty}
                   </span>

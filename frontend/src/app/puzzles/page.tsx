@@ -19,6 +19,7 @@ interface Attempt {
   id: number;
   puzzle_id: number;
   status: string;
+  current_grid: number[][];
 }
 
 const difficultyColor: Record<string, string> = {
@@ -53,7 +54,7 @@ export default function PuzzlesPage() {
     fetch();
   }, [difficulty, user]);
 
-  const attemptMap = Object.fromEntries(attempts.map((a) => [a.puzzle_id, a]));
+  const attemptMap = Object.fromEntries([...attempts].reverse().map((a) => [a.puzzle_id, a]));
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
@@ -82,6 +83,7 @@ export default function PuzzlesPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {puzzles.map((puzzle) => {
             const attempt = attemptMap[puzzle.id];
+            const displayGrid = attempt?.current_grid || Array.from({ length: puzzle.ver_size }, () => Array(puzzle.hor_size).fill(0));
             return (
               <Link
                 key={puzzle.id}
@@ -90,17 +92,17 @@ export default function PuzzlesPage() {
               >
                 <div className="flex items-start justify-between mb-3">
                   <h2 className="font-semibold text-black group-hover:text-gray-800">{puzzle.title}</h2>
-                  {attempt && (
-                    <span
-                      className={`text-xs px-2 py-0.5 rounded-full ${
-                        attempt.status === "completed"
-                          ? "bg-green-900/50 text-green-400"
-                          : "bg-gray-100 text-gray-700"
-                      }`}
-                    >
-                      {attempt.status === "completed" ? "✓ solved" : "in progress"}
-                    </span>
-                  )}
+                  <div 
+                    className="grid shrink-0 border border-gray-100 bg-white shadow-sm overflow-hidden"
+                    style={{ gridTemplateColumns: `repeat(${puzzle.hor_size}, 2px)` }}
+                  >
+                    {displayGrid.flat().map((cell, i) => (
+                      <div 
+                        key={i} 
+                        className={`w-[2px] h-[2px] ${cell === 1 ? 'bg-black' : 'bg-transparent'}`} 
+                      />
+                    ))}
+                  </div>
                 </div>
                 <div className="text-gray-600 text-sm mb-3">
                   {puzzle.hor_size}×{puzzle.ver_size} · by {puzzle.author_username}
