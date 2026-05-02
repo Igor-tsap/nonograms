@@ -19,7 +19,7 @@ async def read_puzzles(
     limit: int = Query(100),
     creator_id: int = Query(None)
 ):
-    puzzles = await service.get_puzzles(db, hor_size, ver_size, difficulty, sort_by, direction, offset, limit)
+    puzzles = await service.get_puzzles(db, hor_size, ver_size, difficulty, sort_by, direction, offset, limit, creator_id)
     return puzzles
 
 @router.get("/my_puzzles", response_model=list[PuzzleResponse])

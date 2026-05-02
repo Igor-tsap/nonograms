@@ -1,7 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from .model import Puzzles
-from .schema import PuzzleCreate, PuzzleUpdate
+from .schema import PuzzleCreate, PuzzleUpdate, PuzzleResponse
+from users.model import Users
 from .utils import generate_clues, calculate_difficulty
 from auth import get_current_user
 from fastapi import Depends
@@ -26,11 +27,27 @@ async def get_puzzles(db: AsyncSession, hor_size=None, ver_size=None, difficulty
         if filter_options[f]:
             filters.append(getattr(Puzzles, f) == filter_options[f])
 
-    if creator_id is not None:
+    if creator_id:
         filters.append(Puzzles.author_id == creator_id)
+            
 
-    result = await db.execute(select(Puzzles).where(*filters).order_by(order_by).offset(offset).limit(limit))
-    return result.scalars().all()
+    result = await db.execute(select(Puzzles, Users.username.label("author_username"))
+                              .outerjoin(Users, Puzzles.author_id == Users.id)
+                              .where(*filters).order_by(order_by)
+                              .offset(offset).limit(limit))
+    rows = result.all()
+    return [PuzzleResponse(
+        id=p.id,
+        title=p.title,
+        hor_size=p.hor_size,
+        ver_size=p.ver_size,
+        difficulty=p.difficulty,
+        row_clues=p.row_clues,
+        col_clues=p.col_clues,
+        solution_grid=p.solution_grid,
+        author_username=username
+    ) for p, username in rows
+]
 
 async def get_puzzles_by_creator(db: AsyncSession, creator_id: int):
     result = await db.execute(select(Puzzles).where(Puzzles.author_id == creator_id))
