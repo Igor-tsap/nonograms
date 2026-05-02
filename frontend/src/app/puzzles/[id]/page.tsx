@@ -105,7 +105,7 @@ export default function PuzzlePage() {
   const maxColClue = Math.max(...puzzle.col_clues.map((c) => c.length));
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-10">
+    <div className="max-w-6xl mx-auto px-6 py-10">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight mb-1">{puzzle.title}</h1>
         <p className="text-gray-600 text-sm">
@@ -114,7 +114,7 @@ export default function PuzzlePage() {
       </div>
 
       {solved && (
-        <div className="mb-6 bg-green-900/30 border border-green-800 rounded-xl px-5 py-4 text-green-400 font-semibold">
+        <div className="mb-6 bg-green-900/30 border border-green-800 rounded-xl px-5 py-4 text-black font-semibold">
           ✓ Puzzle solved!
         </div>
       )}
@@ -152,11 +152,13 @@ export default function PuzzlePage() {
                         }
                         setCompletedColClues(newSet);
                       }}
-                      className={`text-right text-xs pr-2 cursor-pointer select-none transition-colors hover:bg-gray-100 ${
+                    className={`w-8 h-8 text-xs cursor-pointer select-none transition-colors hover:bg-gray-100 ${
                         isCompleted ? "line-through text-gray-300" : "text-gray-600 font-bold"
-                      }`}
+                      } ${clue[clueIndex] !== undefined ? "border border-gray-300" : ""}`}
                     >
+                    <div className="flex items-center justify-center w-full h-full">
                       {clue[clueIndex] ?? ""}
+                    </div>
                     </td>
                   );
                 })}
@@ -167,7 +169,7 @@ export default function PuzzlePage() {
             {grid.map((row, ri) => (
               <tr key={ri}>
                 {Array.from({ length: maxRowClue - puzzle.row_clues[ri].length }).map((_, i) => (
-                  <td key={`empty-${ri}-${i}`} className="w-6" /> 
+                  <td key={`empty-${ri}-${i}`} className="w-8 h-8" /> 
                 ))}
                 {puzzle.row_clues[ri].map((n, i) => {
                   const clueKey = `row-${ri}-${i}`;
@@ -184,11 +186,13 @@ export default function PuzzlePage() {
                         }
                         setCompletedRowClues(newSet);
                       }}
-                      className={`text-right text-xs pr-2 cursor-pointer select-none transition-colors hover:bg-gray-100 ${
+                        className={`w-8 h-8 text-xs cursor-pointer select-none transition-colors hover:bg-gray-100 ${
                         isCompleted ? "line-through text-gray-300" : "text-gray-600 font-bold"
-                      }`}
+                      } ${n ? "border border-gray-300" : ""}`}
                     >
-                      {n}
+                        <div className="flex items-center justify-center w-full h-full">
+                          {n}
+                        </div>
                     </td>
                   );
                 })}
@@ -198,11 +202,11 @@ export default function PuzzlePage() {
                     onMouseDown={(e) => handleMouseDown(ri, ci, e)}
                     onMouseEnter={() => handleMouseEnter(ri, ci)}
                     className={`
-                      w-8 h-8 border border-gray-300
+                      w-8 h-8 border border-gray-500
                       cursor-pointer transition-colors select-none relative
                       ${cell === 1 ? "bg-black" : "bg-white hover:bg-gray-50"}
-                      ${ci % 5 === 0 && ci !== 0 ? "border-l-2 !border-l-black" : ""}
-                      ${ri % 5 === 0 && ri !== 0 ? "border-t-2 !border-t-black" : ""}
+                      ${ci % 5 === 0 ? "border-l-2 border-l-zinc-500" : ""}
+                      ${ri % 5 === 0 ? "border-t-2 border-t-zinc-500" : ""}
                     `}
                   >
                     {/* The "Point" / Mark */}

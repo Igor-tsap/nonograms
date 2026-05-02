@@ -81,7 +81,7 @@ export default function CreatePuzzlePage() {
           <div>
             <label className="block text-sm text-gray-700 mb-2">Columns: {horSize}</label>
             <input
-              type="range" min={2} max={20} value={horSize}
+              type="range" min={2} max={30} value={horSize}
               onChange={(e) => resizeGrid(Number(e.target.value), verSize)}
               className="w-40"
             />
@@ -89,7 +89,7 @@ export default function CreatePuzzlePage() {
           <div>
             <label className="block text-sm text-gray-700 mb-2">Rows: {verSize}</label>
             <input
-              type="range" min={2} max={20} value={verSize}
+              type="range" min={2} max={30} value={verSize}
               onChange={(e) => resizeGrid(horSize, Number(e.target.value))}
               className="w-40"
             />
