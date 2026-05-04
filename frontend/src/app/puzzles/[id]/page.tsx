@@ -87,13 +87,12 @@ export default function PuzzlePage() {
     if (painting === null || !attempt || solved) return;
     setPainting(null);
 
-    // Prepare data for DB: Convert all marks (2) back to 0s
-    const dbGrid = grid.map(row => 
-      row.map(cell => (cell === 2 ? 0 : cell))
-    );
 
-    const updated = await updateAttempt(attempt.id, dbGrid);
-    if (updated.status === "completed") setSolved(true);
+    const updated = await updateAttempt(attempt.id, grid);
+    if (updated.status === "completed") {
+      setSolved(true);
+      setGrid(updated.current_grid);
+    }
   },
   [grid, attempt, solved, painting]
   );
