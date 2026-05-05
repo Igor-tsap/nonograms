@@ -33,6 +33,8 @@ export default function PuzzlesPage() {
   const [puzzles, setPuzzles] = useState<Puzzle[]>([]);
   const [attempts, setAttempts] = useState<Attempt[]>([]);
   const [difficulty, setDifficulty] = useState("");
+  const [horSize, setHorSize] = useState("");
+  const [verSize, setVerSize] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -41,6 +43,8 @@ export default function PuzzlesPage() {
       try {
         const params: Record<string, string> = {};
         if (difficulty) params.difficulty = difficulty;
+        if (horSize) params.hor_size = horSize;
+        if (verSize) params.ver_size = verSize;
         const data = await getPuzzles(params);
         setPuzzles(data);
         if (user) {
@@ -52,28 +56,48 @@ export default function PuzzlesPage() {
       }
     };
     fetch();
-  }, [difficulty, user]);
+  }, [difficulty, horSize, verSize, user]);
 
   const attemptMap = Object.fromEntries([...attempts].reverse().map((a) => [a.puzzle_id, a]));
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Puzzles</h1>
-        <div className="flex gap-2">
-          {["", "easy", "medium", "hard"].map((d) => (
-            <button
-              key={d}
-              onClick={() => setDifficulty(d)}
-              className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                difficulty === d
-                  ? "bg-white text-black"
-                  : "text-gray-600 hover:text-black border border-gray-300"
-              }`}
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex gap-1.5">
+            {["", "easy", "medium", "hard"].map((d) => (
+              <button
+                key={d}
+                onClick={() => setDifficulty(d)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  difficulty === d
+                    ? "bg-black text-white"
+                    : "text-gray-600 hover:text-black border border-gray-200"
+                }`}
+              >
+                {d || "All"}
+              </button>
+            ))}
+          </div>
+          <div className="flex gap-2">
+            <select
+              value={horSize}
+              onChange={(e) => setHorSize(e.target.value)}
+              className="bg-white border border-gray-200 rounded-lg px-2 py-1.5 text-sm outline-none focus:border-black transition-colors text-gray-700"
             >
-              {d || "All"}
-            </button>
-          ))}
+              <option value="">Min Width</option>
+              {[5, 10, 15, 20, 25].map(s => <option key={s} value={s.toString()}>{s}+</option>)}
+            </select>
+            <select
+              value={verSize}
+              onChange={(e) => setVerSize(e.target.value)}
+              className="bg-white border border-gray-200 rounded-lg px-2 py-1.5 text-sm outline-none focus:border-black transition-colors text-gray-700"
+            >
+              <option value="">Min Height</option>
+              {[5, 10, 15, 20, 25].map(s => <option key={s} value={s.toString()}>{s}+</option>)}
+            </select>
+          </div>
         </div>
       </div>
 

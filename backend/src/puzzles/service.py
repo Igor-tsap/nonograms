@@ -10,8 +10,7 @@ from fastapi import Depends
 
 
 
-async def get_puzzles(db: AsyncSession, hor_size=None, ver_size=None, difficulty=None, sort_by="created_at", direction="desc", offset: int = 0, limit: int = 100, creator_id: int = None):
-    filter_options = {"hor_size": hor_size, "ver_size": ver_size, "difficulty": difficulty}
+async def get_puzzles(db: AsyncSession, min_hor_size=None, min_ver_size=None, difficulty=None, sort_by="created_at", direction="desc", offset: int = 0, limit: int = 100, creator_id: int = None):
     filters = []
 
     limit = min(limit, 100)
@@ -23,9 +22,12 @@ async def get_puzzles(db: AsyncSession, hor_size=None, ver_size=None, difficulty
     else:
         order_by = order_by.desc()
 
-    for f in filter_options:
-        if filter_options[f]:
-            filters.append(getattr(Puzzles, f) == filter_options[f])
+    if min_hor_size is not None:
+        filters.append(Puzzles.hor_size >= min_hor_size)
+    if min_ver_size is not None:
+        filters.append(Puzzles.ver_size >= min_ver_size)
+    if difficulty:
+        filters.append(Puzzles.difficulty == difficulty)
 
     if creator_id:
         filters.append(Puzzles.author_id == creator_id)
