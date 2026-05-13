@@ -11,6 +11,7 @@ import json
 from sqlalchemy.sql import table, column
 from sqlalchemy import String, Integer, JSON, DateTime
 from datetime import datetime
+from src.puzzles.utils import generate_clues
 
 
 
@@ -34,36 +35,6 @@ def upgrade() -> None:
         column('updated_at', DateTime),
     )
 
-    def make_clues(grid):
-        rows = []
-        for row in grid:
-            clue = []
-            count = 0
-            for cell in row:
-                if cell == 1:
-                    count += 1
-                elif count > 0:
-                    clue.append(count)
-                    count = 0
-            if count > 0:
-                clue.append(count)
-            rows.append(clue if clue else [0])
-
-        cols = []
-        for c in range(len(grid[0])):
-            clue = []
-            count = 0
-            for r in range(len(grid)):
-                if grid[r][c] == 1:
-                    count += 1
-                elif count > 0:
-                    clue.append(count)
-                    count = 0
-            if count > 0:
-                clue.append(count)
-            cols.append(clue if clue else [0])
-
-        return rows, cols
 
     grids = [
         # 5x5
@@ -125,7 +96,7 @@ def upgrade() -> None:
     now = datetime.utcnow()
     rows = []
     for i, grid in enumerate(grids):
-        row_clues, col_clues = make_clues(grid)
+        row_clues, col_clues = generate_clues(grid)
         rows.append({
             'title': titles[i],
             'author_id': None,
