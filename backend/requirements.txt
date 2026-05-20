@@ -1,7 +1,7 @@
 fastapi==0.133.1
 uvicorn==0.41.0
 sqlalchemy==2.0.45
-aiomysql==0.2.0
+aiomysql==0.1.1
 pydantic==2.12.5
 python-dotenv==1.2.1
 python-jose==3.5.0
@@ -10,3 +10,5 @@ passlib==1.7.4
 cryptography>=3.4
 alembic==1.18.4
 websockets==11.0.3
+redis[asyncio]==4.5.1
+httpx
