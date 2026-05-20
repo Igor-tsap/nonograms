@@ -1,4 +1,14 @@
 services:
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 20s
+      retries: 10
   db:
     image: mysql:8
     restart: always
@@ -15,6 +25,7 @@ services:
       - mysql_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 5s
       timeout: 20s
       retries: 10
 
@@ -27,9 +38,11 @@ services:
       - "8001:8000"
     volumes:
       - ./backend:/app
-    # command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
       db:
+        condition: service_healthy
+      redis:
         condition: service_healthy
 
   frontend:
