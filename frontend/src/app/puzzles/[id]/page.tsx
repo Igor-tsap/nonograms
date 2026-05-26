@@ -228,11 +228,6 @@ export default function PuzzlePage() {
           </div>
         </div>
       </section>
-
-      {/* Chat sidebar */}
-      {/* <ChatProvider roomId={String(id)}>
-        <ChatWindow currentUsername={user?.name ?? "Anonymous"} />
-      </ChatProvider> */}
       {chatSidebar}
     </div>
   );
