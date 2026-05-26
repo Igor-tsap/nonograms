@@ -22,12 +22,17 @@ interface ChatContextValue {
 }
 
 function parseMessage(raw: string): ChatMessage {
-  const idx = raw.indexOf(": ");
-  if (idx === -1) return { username: "Anonymous", message: raw };
-  return {
+  try {
+    const data = JSON.parse(raw);
+    return { username: data.username, message: data.message };
+  } catch {
+    const idx = raw.indexOf(": ");
+    if (idx === -1) return { username: "Anonymous", message: raw };
+    return {
     username: raw.slice(0, idx),
     message: raw.slice(idx + 2),
-  };
+    };
+  }
 }
 
 const ChatContext = createContext<ChatContextValue | null>(null);
