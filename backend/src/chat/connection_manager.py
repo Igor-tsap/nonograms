@@ -43,5 +43,8 @@ class ConnectionManager:
         pubsub = redis.pubsub()
         await pubsub.subscribe(f"puzzle_{room_id}")
         async for message in pubsub.listen():
+            if room_id not in self.connections:
+                await pubsub.unsubscribe(f"puzzle_{room_id}")
+                break
             if message['type'] == 'message':
                 await self.broadcast_local(message['data'], room_id)
