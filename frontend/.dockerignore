@@ -1,11 +1,8 @@
 node_modules
 .next
-
 .git
 .gitignore
-
 .idea
 .vscode
-
-.env*
+.env.production
 npm-debug.log
