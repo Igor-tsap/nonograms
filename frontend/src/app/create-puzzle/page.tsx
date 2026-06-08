@@ -64,7 +64,7 @@ export default function CreatePuzzlePage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-10">
+    <div className="h-full w-full overflow-y-auto px-6 py-10">
       <h1 className="text-3xl font-bold tracking-tight mb-8">Create Puzzle</h1>
 
       <div className="space-y-6 mb-8">
@@ -110,7 +110,7 @@ export default function CreatePuzzlePage() {
                 key={ci}
                 onMouseDown={() => handleMouseDown(ri, ci)}
                 onMouseEnter={() => handleMouseEnter(ri, ci)}
-                className={`w-8 h-8 border cursor-pointer transition-colors ${
+                className={`w-4 h-4 border cursor-pointer transition-colors ${
                   cell === 1 ? "bg-black border-gray-500" : "bg-white border-gray-300 hover:bg-gray-50"
                 } ${ci % 5 === 0 ? "border-l-zinc-500" : ""} ${ri % 5 === 0 ? "border-t-zinc-500" : ""}`}
               />

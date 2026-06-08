@@ -15,6 +15,7 @@ from database.core import Base
 from users import model
 from puzzles import model
 from attempts import model
+from chat import model
 
 
 config = context.config
