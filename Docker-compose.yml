@@ -19,10 +19,10 @@ services:
     env_file:
       - backend/.env
     environment:
-      MYSQL_ROOT_PASSWORD: realpublicsmartasspassword
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: nonograms
       MYSQL_USER: appuser
-      MYSQL_PASSWORD: realpublicsmartasspassword
+      MYSQL_PASSWORD: root
     volumes:
       - mysql_data:/var/lib/mysql
 
