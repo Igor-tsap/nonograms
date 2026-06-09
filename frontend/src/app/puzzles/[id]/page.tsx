@@ -97,6 +97,7 @@ export default function PuzzlePage() {
     setPainting(null);
     if (user && attempt) {
       const updated = await updateAttempt(attempt.id, grid);
+      console.log("updated attempt:", updated);
       if (updated.status === "completed") {
         setSolved(true);
         setGrid(updated.current_grid);
