@@ -12,9 +12,9 @@ jobs:
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ 34.118.74.50 }}
-          username: ${{ tsap.ihor }}
-          key: ${{ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPfpqzRTQMaltiYfvFDGP1+O/2SGXTb8WZwW4S+q/F28 tsap.ihor@gmail.com }}
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ~/nonograms
             git pull origin main
