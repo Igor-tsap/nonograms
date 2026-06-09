@@ -50,16 +50,17 @@ services:
     restart: unless-stopped
     ports:
       - "80:3000"
+    command: npm run start
     depends_on:
       - backend
 
-  phpmyadmin:
-    image: phpmyadmin
-    profiles: ["dev"]
-    ports:
-      - "8081:80"
-    environment:
-      PMA_HOST: db
+  # phpmyadmin:
+  #   image: phpmyadmin
+  #   profiles: ["dev"]
+  #   ports:
+  #     - "8081:80"
+  #   environment:
+  #     PMA_HOST: db
 
 volumes:
   mysql_data:

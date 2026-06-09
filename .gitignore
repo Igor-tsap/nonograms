@@ -237,3 +237,5 @@ backend/*.pyc
 # ======================
 
 /httpRequests/
+
+docker-compose.override.yml
