@@ -46,7 +46,7 @@ services:
       --port 8000
 
   frontend:
-    build: ./frontend
+    image: ghcr.io/${REPO_NAME}/frontend:latest
     env_file:
       - frontend/.env.local
     restart: unless-stopped
@@ -81,11 +81,11 @@ services:
     restart: unless-stopped
     privileged: true
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock.ro
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - /:/rootfs:ro
       - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
     ports:
       - "8080:8080"
