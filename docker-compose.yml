@@ -75,6 +75,8 @@ services:
     image: grafana/grafana
     ports:
       - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.49.1
@@ -96,3 +98,4 @@ services:
 
 volumes:
   mysql_data:
+  grafana_data:

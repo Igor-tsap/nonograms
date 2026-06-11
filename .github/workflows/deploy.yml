@@ -76,12 +76,25 @@ jobs:
           echo "REPO_NAME=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 
       
+      # - name: Build and push Frontend Image
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./frontend
+      #     push: true
+      #     tags: ghcr.io/${{ env.REPO_NAME }}/frontend:latest
+
+      
       - name: Build and push Frontend Image
         uses: docker/build-push-action@v5
         with:
           context: ./frontend
           push: true
           tags: ghcr.io/${{ env.REPO_NAME }}/frontend:latest
+          
+          build-args: |
+            NEXT_PUBLIC_API_URL=http://${{ secrets.SERVER_IP }}:8000/api
+            NEXT_PUBLIC_WS_URL=ws://${{ secrets.SERVER_IP }}:8000/api
+
 
   
   deploy:
