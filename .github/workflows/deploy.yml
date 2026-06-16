@@ -107,7 +107,7 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          debug: true
+          # debug: true
           command_timeout: 15m
           script: |
             cd ~/nonograms

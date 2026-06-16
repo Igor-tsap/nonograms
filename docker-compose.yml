@@ -64,42 +64,42 @@ services:
     environment:
       PMA_HOST: db
 
-  prometheus:
-    image: prom/prometheus
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
+  # prometheus:
+  #   image: prom/prometheus
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  #   ports:
+  #     - "9090:9090"
 
-  grafana:
-    image: grafana/grafana
-    ports:
-      - "3001:3000"
-    volumes:
-      - grafana_data:/var/lib/grafana
+  # grafana:
+  #   image: grafana/grafana
+  #   ports:
+  #     - "3001:3000"
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
 
-  cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.49.1
-    restart: unless-stopped
-    privileged: true
-    devices:
-      - /dev/kmsg
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /sys:/sys:ro
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-      - /var/lib/docker/:/var/lib/docker:ro
+  # cadvisor:
+  #   image: gcr.io/cadvisor/cadvisor:v0.49.1
+  #   restart: unless-stopped
+  #   privileged: true
+  #   devices:
+  #     - /dev/kmsg
+  #   volumes:
+  #     - /:/rootfs:ro
+  #     - /var/run:/var/run:ro
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #     - /sys:/sys:ro
+  #     - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  #     - /var/lib/docker/:/var/lib/docker:ro
 
-    ports:
-      - "8080:8080"
-    command:
-      - '--global_housekeeping_interval=30s'
-      - '--housekeeping_interval=15s'
-      - '--disable_metrics=disk,tcp,udp,percpu,sched'
-      - '--docker_only=true'
+  #   ports:
+  #     - "8080:8080"
+  #   command:
+  #     - '--global_housekeeping_interval=30s'
+  #     - '--housekeeping_interval=15s'
+  #     - '--disable_metrics=disk,tcp,udp,percpu,sched'
+  #     - '--docker_only=true'
 
 volumes:
   mysql_data:
-  grafana_data:
+  # grafana_data:
