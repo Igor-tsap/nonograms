@@ -24,7 +24,7 @@ app = FastAPI(title="Nonograms API", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     # allow_origins=["*"],
-    allow_origins=["http://34.118.74.50", "http://34.118.74.50:8000", "http://localhost", "http://localhost:3000", "http://localhost:3001"],  # Next.js dev/prod ports
+    allow_origins=["http://34.133.4.187", "http://34.133.4.187:8000", "http://localhost", "http://localhost:3000", "http://localhost:3001"],  # Next.js dev/prod ports
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
