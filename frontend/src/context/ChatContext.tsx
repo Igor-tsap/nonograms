@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useLocale } from "next-intl";
 import { ChatSocket, ConnectionStatus } from "@/lib/chatSocket";
 
 export interface ChatMessage {
@@ -43,6 +44,7 @@ interface ChatProviderProps {
 }
 
 export function ChatProvider({ roomId, children }: ChatProviderProps) {
+  const locale = useLocale();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [status, setStatus] = useState<ConnectionStatus>("idle");
   const socketRef = useRef<ChatSocket | null>(null);
@@ -58,6 +60,7 @@ export function ChatProvider({ roomId, children }: ChatProviderProps) {
   useEffect(() => {
     console.log("[ChatContext] mounting for room", roomId);
     const socket = new ChatSocket(roomId, {
+      locale: locale,
       onMessage: (raw) => {
         setMessages((prev) => [...prev, parseMessage(raw)]);
       },
@@ -73,7 +76,7 @@ export function ChatProvider({ roomId, children }: ChatProviderProps) {
       socketRef.current = null;
       setMessages([]);
     };
-  }, [roomId]);
+  }, [roomId, locale]);
 
   const sendMessage = useCallback((text: string) => {
     socketRef.current?.send(text);

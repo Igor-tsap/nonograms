@@ -9,6 +9,7 @@ export type ConnectionStatus =
   | "disconnected";
 
 export interface ChatSocketOptions {
+  locale: string;
   /** Called for every inbound message (already JSON-parsed) */
   onMessage: MessageHandler;
   /** Called whenever the connection status changes */
@@ -37,7 +38,7 @@ export class ChatSocket {
       process.env.NEXT_PUBLIC_WS_URL ?? "ws://localhost:8000/api";
     // const base = "ws://localhost:8001/api";
 
-    this.url = `${base}/chat/ws/${roomId}`;
+    this.url = `${base}/chat/ws/${roomId}?locale=${options.locale}`;
     this.onMessage = options.onMessage;
     this.onStatusChange = options.onStatusChange ?? (() => {});
     this.maxRetries = options.maxRetries ?? 5;
