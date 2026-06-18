@@ -8,28 +8,32 @@ from .model import ChatMessage as ChatMessageModel
 from .schema import ChatMessageCreate
 from database.redis import redis
 
-
+BACKEND_MESAGES = {
+    "en": {"anonymous": "Anonymous"},
+    "uk": {"anonymous": "Анонім"},
+}
 async def publish_chat_message(room_id: str, message: str):
     await redis.publish(f"puzzle_{room_id}", message)
-async def get_username_from_token( db: AsyncSession, token: Optional[str]) -> str:
+async def get_username_from_token( db: AsyncSession, token: Optional[str], locale: str = "en") -> str:
+    lang_messages = BACKEND_MESAGES.get(locale, BACKEND_MESAGES["en"])
     if token is None:
-        return "Anonymous"
+        return lang_messages["anonymous"]
     try:
         payload = jwt.decode(token, os.getenv("SECRET_KEY"), algorithms=[os.getenv("ALGORITHM")])
         print(f"[auth] payload: {payload}")
         user_id = payload.get("id")
         if not user_id:
-            return "Anonymous"
+            return lang_messages["anonymous"]
         result = await db.execute(select(Users).where(Users.id == user_id))
         user = result.scalars().first()
-        return user.username if user else "Anonymous"
+        return user.username if user else lang_messages["anonymous"]
     except JWTError:
-        return "Anonymous"
+        return lang_messages["anonymous"]
     except Exception as e:
         print(f"[get_username_from_token] error: {e}")
         print(f"[ws] error: {e}")
-        return "Anonymous"
-    
+        return lang_messages["anonymous"]
+
 async def get_chat_messages(db: AsyncSession, room_id: int, limit: int = 50, offset: int = 0):
     limit = min(limit, 50)
     
