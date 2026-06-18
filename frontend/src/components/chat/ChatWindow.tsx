@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useChat } from "@/context/ChatContext";
 import { MessageBubble } from "./MessageBubble";
 
+import { useTranslations } from "next-intl";
+
 interface ChatWindowProps {
   currentUsername: string;
 }
@@ -17,6 +19,7 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 export function ChatWindow({ currentUsername }: ChatWindowProps) {
+  const t = useTranslations("Chat");
   const { messages, status, sendMessage } = useChat();
   const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -45,7 +48,7 @@ export function ChatWindow({ currentUsername }: ChatWindowProps) {
       {/* Header */}
       <div className="flex-none p-3 border-b border-stone-200">
         <h2 className="text-sm font-semibold text-stone-700 tracking-wide uppercase">
-          Chat
+          {t("header")}
         </h2>
         {STATUS_LABEL[status] && (
           <span className="text-xs text-stone-400 animate-pulse">
@@ -61,7 +64,7 @@ export function ChatWindow({ currentUsername }: ChatWindowProps) {
       <div className="flex-1 overflow-y-auto px-3 py-2 flex flex-col gap-0.5">
         {messages.length === 0 && status === "connected" && (
           <p className="text-xs text-stone-400 text-center mt-8">
-            No messages yet. Say hello!
+            {t("noMessages")}
           </p>
         )}
         {messages.map((msg, i) => (
@@ -83,7 +86,7 @@ export function ChatWindow({ currentUsername }: ChatWindowProps) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={status === "connected" ? "Message…" : "Waiting for connection…"}
+            placeholder={status === "connected" ? t("placeholder") : t("waitingForConnection")}
             disabled={status !== "connected"}
             className="flex-1 bg-transparent text-sm text-stone-800 placeholder:text-stone-400 outline-none disabled:opacity-50"
           />
