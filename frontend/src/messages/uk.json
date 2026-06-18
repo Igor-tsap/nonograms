@@ -1,0 +1,95 @@
+{
+    "Home": {
+    "title": "нонограми",
+    "description": "Японські кросворди. Розгадуйте, створюйте, діліться.",
+    "browseButton": "До пазлів"
+},
+    "Puzzles": {
+    "title": "Всі пазли",
+    "allDifficulties": "Всі",
+    "minWidth": "Мін. ширина",
+    "minHeight": "Мін. висота",
+    "loading": "Завантаження...",
+    "authorPrefix": "від",
+    "difficulties": {
+        "easy": "Легкий",
+        "medium": "Середній",
+        "hard": "Важкий"
+    }
+},
+
+    "PuzzleId": {
+    "solved": "Пазл розгадано!",
+    "difficulties": {
+        "easy": "Легкий",
+        "medium": "Середній",
+        "hard": "Важкий"
+    },
+    "authorPrefix": "від",
+    "signInSection": "Увійдіть, щоб зберегти свій прогрес",
+    "anonymous": "Анонім"
+},
+
+    "MyPuzzles": {
+        "title": "Мої пазли",
+        "loading": "Завантаження...",
+        "noPuzzles": "У вас ще немає пазлів. Створіть свій перший!",
+        "actions": {
+            "view": "Глянути",
+            "edit": "Редагувати",
+            "delete": "Видалити"
+        },
+        "difficulties": {
+            "easy": "Легкий",
+            "medium": "Середній",
+            "hard": "Важкий"
+        },
+        "authorPrefix": "від",
+        "newPuzzle": "Новий пазл",
+        "notCreator": "Доступ тільки для авторів",
+        "confirmDelete": "Видалити цей пазл?"
+    },
+
+    "EditPuzzle": {
+        "editPuzzle": "Редагувати пазл",
+        "title": "Назва",
+        "columns": "Стовпці",
+        "rows": "Рядки",
+        "saveChanges": "Зберегти зміни",
+        "saving": "Збереження...",
+        "cancel": "Скасувати",
+        "loadingPuzzleData": "Завантаження даних пазла...",
+        "titleRequired": "Назва обов'язкова",
+        "notCreator": "Доступ тільки для авторів"
+    },
+
+    "CreatePuzzle": {
+        "titleRequired": "Назва обов'язкова",
+        "createPuzzle": "Створити пазл",
+        "defaultPuzzleName": "Назва пазла...",
+        "title": "Назва",
+        "columns": "Стовпці",
+        "rows": "Рядки",
+        "creating": "Створення...",
+        "clear": "Очистити",
+        "notCreator": "Доступ тільки для авторів",
+        "failedToCreatePuzzle": "Не вдалось створити пазл"
+    },
+
+    "Navbar": {
+        "title": "нонограми",
+        "browse": "Пазли",
+        "myPuzzles": "Мої пазли",
+        "createPuzzle": "Створити",
+        "logout": "Вихід",
+        "signIn": "Увійти"
+    },
+
+    "Chat": {
+        "header": "Чат",
+        "noMessages": "Поки немає повідомлень. Скажіть привіт!",
+        "send": "Надіслати",
+        "placeholder": "Введіть повідомлення…",
+        "waitingForConnection": "Очікуємо з'єднання…"
+    }
+}

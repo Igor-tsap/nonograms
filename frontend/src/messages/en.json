@@ -1,0 +1,102 @@
+{
+    "Home": {
+    "title": "nonograms",
+    "description": "Japanese crossword puzzles. Solve, create, share.",
+    "browseButton": "Browse Puzzles"
+},
+    "Puzzles": {
+    "title": "Browse Puzzles",
+    "allDifficulties": "All",
+    "minWidth": "Min Width",
+    "minHeight": "Min Height",
+    "loading": "Loading...",
+    "authorPrefix": "by",
+    "difficulties": {
+        "easy": "Easy",
+        "medium": "Medium",
+        "hard": "Hard"
+    }
+},
+
+    "PuzzleId": {
+    "solved": "Puzzle Solved!",
+    "difficulties": {
+        "easy": "Easy",
+        "medium": "Medium",
+        "hard": "Hard"
+    },
+    "authorPrefix": "by",
+    "signInSection": "Sign in to save your progress",
+    "anonymous": "Anonymous"
+    },
+
+    "MyPuzzles": {
+        "title": "My Puzzles",
+        "loading": "Loading...",
+        "noPuzzles": "You don't have any puzzles yet. Create your first one!",
+        "actions": {
+            "view": "View",
+            "edit": "Edit",
+            "delete": "Delete"
+        },
+        "difficulties": {
+            "easy": "Easy",
+            "medium": "Medium",
+            "hard": "Hard"
+        },
+        "authorPrefix": "by",
+        "newPuzzle": "New Puzzle",
+        "notCreator": "Creator access required",
+        "confirmDelete": "Delete this puzzle?"
+    },
+
+    "EditPuzzle": {
+        "editPuzzle": "Edit Puzzle",
+        "title": "Title",
+        "columns": "Columns",
+        "rows": "Rows",
+        "saveChanges": "Save Changes",
+        "saving": "Saving...",
+        "cancel": "Cancel",
+        "loadingPuzzleData": "Loading puzzle data...",
+        "titleRequired": "Title is required",
+        "notCreator": "Creator access required"
+
+    },
+
+    "CreatePuzzle": {
+        "titleRequired": "Title is required",
+        "createPuzzle": "Create Puzzle",
+        "defaultPuzzleName": "Puzzle name...",
+        "title": "Title",
+        "columns": "Columns",
+        "rows": "Rows",
+        "creating": "Creating...",
+        "clear": "Clear grid",
+        "notCreator": "Creator access required",
+        "failedToCreatePuzzle": "Failed to create puzzle"
+    },
+
+    "Navbar": {
+    "title": "nonograms",
+    "browse": "Browse",
+    "myPuzzles": "My Puzzles",
+    "createPuzzle": "Create Puzzle",
+    "logout": "Logout",
+    "signIn": "Sign In"
+},
+
+    "Chat": {
+        "header": "Chat",
+        "noMessages": "No messages yet. Say hello!",
+        "send": "Send",
+        "placeholder": "Type a message...",
+        "waitingForConnection": "Waiting for connection..."
+    }
+        
+}
+
+
+
+
+
