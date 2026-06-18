@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { Link, useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { getMyPuzzles, deletePuzzle } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 
@@ -22,6 +23,8 @@ const difficultyColor: Record<string, string> = {
 };
 
 export default function MyPuzzlesPage() {
+  const t = useTranslations("MyPuzzles");
+  const router = useRouter();
   const { user, isCreator } = useAuth();
   const [puzzles, setPuzzles] = useState<Puzzle[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,11 +42,11 @@ export default function MyPuzzlesPage() {
   useEffect(() => { load(); }, []);
 
   const handleEdit = (id: number) => {
-    window.location.href = `/my-puzzles/${id}/edit`;
+    router.push(`/my-puzzles/${id}/edit`);
   }
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Delete this puzzle?")) return;
+    if (!confirm(t("confirmDelete"))) return;
     await deletePuzzle(id);
     setPuzzles((prev) => prev.filter((p) => p.id !== id));
   };
@@ -51,7 +54,7 @@ export default function MyPuzzlesPage() {
   if (!user || !isCreator) {
     return (
       <div className="text-center py-20 text-gray-500">
-        Creator access required.
+        {t("notCreator")}
       </div>
     );
   }
@@ -59,19 +62,19 @@ export default function MyPuzzlesPage() {
   return (
     <div className="max-w-4xl mx-auto px-6 py-10">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">My Puzzles</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
         <Link
           href="/create-puzzle"
           className="bg-white text-black font-semibold px-5 py-2 rounded-lg hover:bg-zinc-200 transition-colors text-sm"
         >
-          + New Puzzle
+          + {t("newPuzzle")}
         </Link>
       </div>
 
       {loading ? (
-        <div className="text-gray-500 text-center py-20">Loading...</div>
+        <div className="text-gray-500 text-center py-20">{t("loading")}...</div>
       ) : puzzles.length === 0 ? (
-        <div className="text-gray-500 text-center py-20">No puzzles yet.</div>
+        <div className="text-gray-500 text-center py-20">{t("noPuzzles")}.</div>
       ) : (
         <div className="space-y-3">
           {puzzles.map((puzzle) => (
@@ -82,9 +85,9 @@ export default function MyPuzzlesPage() {
               <div>
                 <h2 className="font-semibold text-black mb-1">{puzzle.title}</h2>
                 <div className="text-gray-600 text-sm">
-                  {puzzle.hor_size}×{puzzle.ver_size} · by {puzzle.author_username} ·{" "}
+                  {puzzle.hor_size}×{puzzle.ver_size} · {t("authorPrefix")} {puzzle.author_username} ·{" "}
                   <span className={difficultyColor[puzzle.difficulty] || "text-gray-600"}>
-                    {puzzle.difficulty}
+                    {t(`difficulties.${puzzle.difficulty}`)}
                   </span>
                 </div>
               </div>
@@ -93,19 +96,19 @@ export default function MyPuzzlesPage() {
                   href={`/puzzles/${puzzle.id}`}
                   className="text-sm text-gray-600 hover:text-black transition-colors"
                 >
-                  View
+                  {t("actions.view")}
                 </Link>
                 <button
                   onClick={() => handleEdit(puzzle.id)}
                   className="text-sm text-gray-600 hover:text-black transition-colors"
                 >
-                  Edit
+                  {t("actions.edit")}
                 </button>
                 <button
                   onClick={() => handleDelete(puzzle.id)}
                   className="text-sm text-red-500 hover:text-red-400 transition-colors"
                 >
-                  Delete
+                  {t("actions.delete")}
                 </button>
               </div>
             </div>

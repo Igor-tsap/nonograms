@@ -1,11 +1,12 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams } from "next/navigation";
+
 import { getPuzzle, getAttempts, createAttempt, updateAttempt } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { ChatProvider } from "@/context/ChatContext";
 import { ChatWindow } from "@/components/chat/ChatWindow";
-import { useMemo } from "react";
+import { useTranslations } from "next-intl";
 
 interface Puzzle {
   id: number;
@@ -26,6 +27,7 @@ interface Attempt {
 }
 
 export default function PuzzlePage() {
+  const t = useTranslations("PuzzleId");
   const { id } = useParams();
   const { user } = useAuth();
   const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
@@ -38,31 +40,37 @@ export default function PuzzlePage() {
   const [painting, setPainting] = useState<number | null>(null);
   const chatSidebar = useMemo(() => (
     <ChatProvider roomId={String(id)}>
-      <ChatWindow currentUsername={user?.name ?? "Anonymous"} />
+      <ChatWindow currentUsername={user?.name ?? t("anonymous")} />
     </ChatProvider>
   ), [id, user?.name]);
 
   useEffect(() => {
+    if (!id) return;
     const load = async () => {
-      const p = await getPuzzle(Number(id));
-      setPuzzle(p);
-      if (user) {
-        const attempts = await getAttempts();
-        const existing = attempts.find((a: Attempt) => a.puzzle_id === Number(id));
-        if (existing) {
-          setAttempt(existing);
-          setGrid(existing.current_grid);
-          setSolved(existing.status === "completed");
+      try {
+        const p = await getPuzzle(Number(id));
+        setPuzzle(p);
+        if (user) {
+          const attempts = await getAttempts();
+          const existing = attempts.find((a: Attempt) => a.puzzle_id === Number(id));
+          if (existing) {
+            setAttempt(existing);
+            setGrid(existing.current_grid);
+            setSolved(existing.status === "completed");
+          } else {
+            const newAttempt = await createAttempt(Number(id));
+            setAttempt(newAttempt);
+            setGrid(newAttempt.current_grid);
+          }
         } else {
-          const newAttempt = await createAttempt(Number(id));
-          setAttempt(newAttempt);
-          setGrid(newAttempt.current_grid);
+          // If no user, initialize a blank grid based on puzzle dimensions
+          setGrid(Array.from({ length: p.ver_size }, () => Array(p.hor_size).fill(0)));
         }
-      } else {
-        // If no user, initialize a blank grid based on puzzle dimensions
-        setGrid(Array.from({ length: p.ver_size }, () => Array(p.hor_size).fill(0)));
-      }
+      } catch (err) {
+        console.error("Failed to load puzzle or attempt:", err);
+      }finally {
       setLoading(false);
+      }
     };
     load();
   }, [id, user]);
@@ -121,19 +129,19 @@ export default function PuzzlePage() {
           <div className="mb-8">
             <h1 className="text-3xl font-bold tracking-tight mb-1">{puzzle.title}</h1>
             <p className="text-gray-600 text-sm">
-              {puzzle.hor_size}×{puzzle.ver_size} · {puzzle.difficulty} · by {puzzle.author_username}
+              {puzzle.hor_size}×{puzzle.ver_size} · {t(`difficulties.${puzzle.difficulty}`)} · {t("authorPrefix")} {puzzle.author_username}
             </p>
           </div>
 
           {solved && (
-            <div className="mb-6 bg-green-900/30 border border-green-800 rounded-xl px-5 py-4 text-black font-semibold">
-              ✓ Puzzle solved!
+            <div className="mb-6 bg-gray-900 border border-green-900 rounded-xl px-5 py-1 text-white font-bold text-sm">
+              {t("solved")} ヽ(•‿•)ノ
             </div>
           )}
 
           {!user && (
             <div className="mb-6 bg-gray-100 border border-gray-300 rounded-xl px-5 py-4 text-gray-700 text-sm">
-              Sign in to save your progress
+              {t("signInSection")}
             </div>
           )}
 

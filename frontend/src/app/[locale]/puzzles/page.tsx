@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { getPuzzles, getAttempts } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 
@@ -29,6 +30,7 @@ const difficultyColor: Record<string, string> = {
 };
 
 export default function PuzzlesPage() {
+  const t = useTranslations("Puzzles");
   const { user } = useAuth();
   const [puzzles, setPuzzles] = useState<Puzzle[]>([]);
   const [attempts, setAttempts] = useState<Attempt[]>([]);
@@ -64,7 +66,9 @@ export default function PuzzlesPage() {
     <div className="flex-1 overflow-y-auto h-full">
       <div className="max-w-6xl mx-auto px-6 py-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">Puzzles dev 8</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {t("title")}
+          </h1>
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex gap-1.5">
               {["", "easy", "medium", "hard"].map((d) => (
@@ -77,7 +81,7 @@ export default function PuzzlesPage() {
                       : "text-gray-600 hover:text-black border border-gray-200"
                   }`}
                 >
-                  {d || "All"}
+                  {d ? t(`difficulties.${d}`) : t("allDifficulties")}
                 </button>
               ))}
             </div>
@@ -87,7 +91,7 @@ export default function PuzzlesPage() {
                 onChange={(e) => setHorSize(e.target.value)}
                 className="bg-white border border-gray-200 rounded-lg px-2 py-1.5 text-sm outline-none focus:border-black transition-colors text-gray-700"
               >
-                <option value="">Min Width</option>
+                <option value="">{t("minWidth")}</option>
                 {[5, 10, 15, 20, 25].map(s => <option key={s} value={s.toString()}>{s}+</option>)}
               </select>
               <select
@@ -95,7 +99,7 @@ export default function PuzzlesPage() {
                 onChange={(e) => setVerSize(e.target.value)}
                 className="bg-white border border-gray-200 rounded-lg px-2 py-1.5 text-sm outline-none focus:border-black transition-colors text-gray-700"
               >
-                <option value="">Min Height</option>
+                <option value="">{t("minHeight")}</option>
                 {[5, 10, 15, 20, 25].map(s => <option key={s} value={s.toString()}>{s}+</option>)}
               </select>
             </div>
@@ -103,7 +107,7 @@ export default function PuzzlesPage() {
         </div>
 
         {loading ? (
-          <div className="text-gray-500 text-center py-20">Loading...</div>
+          <div className="text-gray-500 text-center py-20">{t("loading")}</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {puzzles.map((puzzle) => {
@@ -130,10 +134,10 @@ export default function PuzzlesPage() {
                     </div>
                   </div>
                   <div className="text-gray-600 text-sm mb-3">
-                    {puzzle.hor_size}×{puzzle.ver_size} · by {puzzle.author_username}
+                    {puzzle.hor_size}×{puzzle.ver_size} · {t("authorPrefix")} {puzzle.author_username}
                   </div>
                   <span className={`text-xs font-medium ${difficultyColor[puzzle.difficulty] || "text-gray-600"}`}>
-                    {puzzle.difficulty}
+                    {t(`difficulties.${puzzle.difficulty}`)}
                   </span>
                 </Link>
               );

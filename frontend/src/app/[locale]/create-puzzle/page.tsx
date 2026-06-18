@@ -4,8 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createPuzzle } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
+import { useTranslations } from "next-intl";
 
 export default function CreatePuzzlePage() {
+  const t = useTranslations("CreatePuzzle");
   const { user, isCreator } = useAuth();
   const router = useRouter();
   const [title, setTitle] = useState("");
@@ -42,14 +44,14 @@ export default function CreatePuzzlePage() {
   };
 
   const submit = async () => {
-    if (!title.trim()) return setError("Title is required");
+    if (!title.trim()) return setError(t("titleRequired"));
     setError("");
     setLoading(true);
     try {
       await createPuzzle({ title, hor_size: horSize, ver_size: verSize, solution_grid: grid });
       router.push("/my-puzzles");
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "Failed to create puzzle");
+      setError(e instanceof Error ? e.message : t("failedToCreatePuzzle"));
     } finally {
       setLoading(false);
     }
@@ -58,29 +60,29 @@ export default function CreatePuzzlePage() {
   if (!user || !isCreator) {
     return (
       <div className="text-center py-20 text-gray-500">
-        You need to be signed in as a creator to create puzzles.
+        {t("notCreator")}
       </div>
     );
   }
 
   return (
     <div className="h-full w-full overflow-y-auto px-6 py-10">
-      <h1 className="text-3xl font-bold tracking-tight mb-8">Create Puzzle</h1>
+      <h1 className="text-3xl font-bold tracking-tight mb-8">{t("createPuzzle")}</h1>
 
       <div className="space-y-6 mb-8">
         <div>
-          <label className="block text-sm text-gray-700 mb-2">Title</label>
+          <label className="block text-sm text-gray-700 mb-2">{t("title")}</label>
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Puzzle name..."
+            placeholder={t("defaultPuzzleName")}
             className="bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-black outline-none focus:border-black w-80 placeholder:text-gray-500"
           />
         </div>
 
         <div className="flex gap-6">
           <div>
-            <label className="block text-sm text-gray-700 mb-2">Columns: {horSize}</label>
+            <label className="block text-sm text-gray-700 mb-2">{t("columns")}: {horSize}</label>
             <input
               type="range" min={2} max={30} value={horSize}
               onChange={(e) => resizeGrid(Number(e.target.value), verSize)}
@@ -88,7 +90,7 @@ export default function CreatePuzzlePage() {
             />
           </div>
           <div>
-            <label className="block text-sm text-gray-700 mb-2">Rows: {verSize}</label>
+            <label className="block text-sm text-gray-700 mb-2">{t("rows")}: {verSize}</label>
             <input
               type="range" min={2} max={30} value={verSize}
               onChange={(e) => resizeGrid(horSize, Number(e.target.value))}
@@ -125,13 +127,13 @@ export default function CreatePuzzlePage() {
           disabled={loading}
           className="bg-white text-black font-semibold px-6 py-2.5 rounded-lg hover:bg-zinc-200 transition-colors disabled:opacity-50"
         >
-          {loading ? "Creating..." : "Create Puzzle"}
+          {loading ? t("creating") : t("createPuzzle")}
         </button>
         <button
           onClick={() => setGrid(Array.from({ length: verSize }, () => Array(horSize).fill(0)))}
           className="text-gray-600 hover:text-black text-sm transition-colors"
         >
-          Clear grid
+          {t("clear")}
         </button>
       </div>
 
