@@ -59,7 +59,7 @@ export class ChatSocket {
 
     const raw = typeof window !== "undefined" ? localStorage.getItem("user") : null;
     const token = raw ? JSON.parse(raw).token : null;
-    const wsUrl = token ? `${this.url}?token=${token}` : this.url;
+    const wsUrl = token ? `${this.url}&token=${token}` : this.url;
 
     console.log("[ChatSocket] opening", wsUrl);
 
