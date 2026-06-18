@@ -16,10 +16,10 @@ connection_manager = ConnectionManager()
 
 
 @router.websocket("/ws/{room_id}")
-async def websocket_endpoint(websocket: WebSocket, room_id: str, token: Optional[str] = Query(default=None)):
+async def websocket_endpoint(websocket: WebSocket, room_id: str, locale: str = "en", token: Optional[str] = Query(default=None)):
     await connection_manager.connect(websocket, room_id)
     async with AsyncSessionLocal() as db:
-        username = await service.get_username_from_token(db, token)
+        username = await service.get_username_from_token(db, token, locale=locale)
         history = await service.get_chat_messages(db, room_id, limit=50)
         for msg in history:
             # await websocket.send_text(f"{msg.username}: {msg.message}")
