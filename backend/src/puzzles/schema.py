@@ -1,21 +1,25 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional
 
+
+class LocalizedString(BaseModel):
+    en: str = Field(..., description="English translation")
+    uk: str = Field(..., description="Ukrainian translation")
 class PuzzleCreate(BaseModel):
-    title: str
+    title: LocalizedString
     hor_size: int
     ver_size: int
     solution_grid: List[List[int]]
 
 class PuzzleUpdate(BaseModel):
-    title: Optional[str] = None
+    title: Optional[LocalizedString] = None
     hor_size: Optional[int] = None
     ver_size: Optional[int] = None
     solution_grid: Optional[List[List[int]]] = None
 
 class PuzzleResponse(BaseModel):
     id: int
-    title: str
+    title: LocalizedString
     hor_size: int
     ver_size: int
     difficulty: str
