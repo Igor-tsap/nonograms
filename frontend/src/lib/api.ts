@@ -56,7 +56,10 @@ export async function getPuzzle(id: number) {
 }
 
 export async function createPuzzle(data: {
-  title: string;
+  title: {
+    en: string;
+    uk: string;
+  };
   hor_size: number;
   ver_size: number;
   solution_grid: number[][];
@@ -70,7 +73,7 @@ export async function createPuzzle(data: {
   return res.json();
 }
 
-export async function updatePuzzle(id: number, data: Partial<{ title: string; hor_size: number; ver_size: number; solution_grid: number[][] }>) {
+export async function updatePuzzle(id: number, data: Partial<{ title: { en: string; uk: string }; hor_size: number; ver_size: number; solution_grid: number[][] }>) {
   const res = await fetch(`${API_URL}/puzzles/${id}`, {
     method: "PATCH",
     headers: authHeaders(),
