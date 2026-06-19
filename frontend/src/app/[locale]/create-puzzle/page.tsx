@@ -10,7 +10,10 @@ export default function CreatePuzzlePage() {
   const t = useTranslations("CreatePuzzle");
   const { user, isCreator } = useAuth();
   const router = useRouter();
-  const [title, setTitle] = useState("");
+
+  const [titleEn, setTitleEn] = useState("");
+  const [titleUk, setTitleUk] = useState("");
+
   const [horSize, setHorSize] = useState(5);
   const [verSize, setVerSize] = useState(5);
   const [grid, setGrid] = useState<number[][]>(() => Array.from({ length: 5 }, () => Array(5).fill(0)));
@@ -44,11 +47,11 @@ export default function CreatePuzzlePage() {
   };
 
   const submit = async () => {
-    if (!title.trim()) return setError(t("titleRequired"));
+    if (!titleEn.trim() || !titleUk.trim()) return setError(t("titleRequired") || "Both English and Ukrainian titles are required.");
     setError("");
     setLoading(true);
     try {
-      await createPuzzle({ title, hor_size: horSize, ver_size: verSize, solution_grid: grid });
+      await createPuzzle({ title: { en: titleEn, uk: titleUk }, hor_size: horSize, ver_size: verSize, solution_grid: grid });
       router.push("/my-puzzles");
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : t("failedToCreatePuzzle"));
@@ -70,14 +73,30 @@ export default function CreatePuzzlePage() {
       <h1 className="text-3xl font-bold tracking-tight mb-8">{t("createPuzzle")}</h1>
 
       <div className="space-y-6 mb-8">
-        <div>
-          <label className="block text-sm text-gray-700 mb-2">{t("title")}</label>
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder={t("defaultPuzzleName")}
-            className="bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-black outline-none focus:border-black w-80 placeholder:text-gray-500"
-          />
+        <div className="flex flex-col md:flex-row gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Title (English)
+            </label>
+            <input
+              value={titleEn}
+              onChange={(e) => setTitleEn(e.target.value)}
+              placeholder="e.g., Black Cat"
+              className="bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-black outline-none focus:border-black w-80 placeholder:text-gray-400"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Назва (Українська)
+            </label>
+            <input
+              value={titleUk}
+              onChange={(e) => setTitleUk(e.target.value)}
+              placeholder="напр., Чорний кіт"
+              className="bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-black outline-none focus:border-black w-80 placeholder:text-gray-400"
+            />
+          </div>
         </div>
 
         <div className="flex gap-6">

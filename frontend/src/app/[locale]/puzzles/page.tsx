@@ -4,10 +4,16 @@ import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { getPuzzles, getAttempts } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
+import { useLocale } from "next-intl";
+
+interface LocalizedString {
+  en: string;
+  uk: string;
+}
 
 interface Puzzle {
   id: number;
-  title: string;
+  title: LocalizedString;
   author_username: string;
   hor_size: number;
   ver_size: number;
@@ -31,6 +37,7 @@ const difficultyColor: Record<string, string> = {
 
 export default function PuzzlesPage() {
   const t = useTranslations("Puzzles");
+  const locale = useLocale() as "en" | "uk";
   const { user } = useAuth();
   const [puzzles, setPuzzles] = useState<Puzzle[]>([]);
   const [attempts, setAttempts] = useState<Attempt[]>([]);
@@ -113,6 +120,7 @@ export default function PuzzlesPage() {
             {puzzles.map((puzzle) => {
               const attempt = attemptMap[puzzle.id];
               const displayGrid = attempt?.current_grid || Array.from({ length: puzzle.ver_size }, () => Array(puzzle.hor_size).fill(0));
+              const displayTitle = puzzle.title[locale] || puzzle.title.en;
               return (
                 <Link
                   key={puzzle.id}
@@ -120,7 +128,7 @@ export default function PuzzlesPage() {
                   className="group bg-white border border-gray-300 rounded-2xl p-5 hover:border-gray-400 transition-colors"
                 >
                   <div className="flex items-start justify-between mb-3">
-                    <h2 className="font-semibold text-black group-hover:text-gray-800">{puzzle.title}</h2>
+                    <h2 className="font-semibold text-black group-hover:text-gray-800">{displayTitle}</h2>
                     <div 
                       className="grid shrink-0 border border-gray-100 bg-white shadow-sm overflow-hidden"
                       style={{ gridTemplateColumns: `repeat(${puzzle.hor_size}, 2px)` }}

@@ -11,7 +11,9 @@ export default function EditPuzzlePage() {
   const router = useRouter();
   const t = useTranslations("EditPuzzle");
   
-  const [title, setTitle] = useState("");
+  const [titleEn, setTitleEn] = useState("");
+  const [titleUk, setTitleUk] = useState("");
+
   const [horSize, setHorSize] = useState(5);
   const [verSize, setVerSize] = useState(5);
   const [grid, setGrid] = useState<number[][]>([]);
@@ -24,7 +26,8 @@ export default function EditPuzzlePage() {
     const loadPuzzle = async () => {
       try {
         const data = await getPuzzle(Number(id));
-        setTitle(data.title);
+        setTitleEn(data.title?.en || "");
+        setTitleUk(data.title?.uk || "");
         setHorSize(data.hor_size);
         setVerSize(data.ver_size);
         setGrid(data.solution_grid || Array.from({ length: data.ver_size }, () => Array(data.hor_size).fill(0)));
@@ -63,11 +66,11 @@ export default function EditPuzzlePage() {
   };
 
   const submit = async () => {
-    if (!title.trim()) return setError(t("titleRequired"));
+    if (!titleEn.trim() || !titleUk.trim()) return setError(t("titleRequired"));
     setError("");
     setSaving(true);
     try {
-      await updatePuzzle(Number(id), { title, hor_size: horSize, ver_size: verSize, solution_grid: grid });
+      await updatePuzzle(Number(id), { title: { en: titleEn, uk: titleUk }, hor_size: horSize, ver_size: verSize, solution_grid: grid });
       router.push("/my-puzzles");
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : t("failedToUpdatePuzzle"));
@@ -85,19 +88,35 @@ export default function EditPuzzlePage() {
   }
 
   return (
-    <div className="absolute top-14 bottom-0 left-0 right-0 overflow-y-auto">
-      <div className="w-full px-6 py-10">
+    <div className="h-full w-full overflow-y-auto px-6 py-10">
         <h1 className="text-3xl font-bold tracking-tight mb-8">{t("editPuzzle")}</h1>
 
         <div className="space-y-6 mb-8">
+        <div className="flex flex-col md:flex-row gap-6">
           <div>
-            <label className="block text-sm text-gray-700 mb-2">{t("title")}</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Title (English)
+            </label>
             <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-black outline-none focus:border-black w-80"
+              value={titleEn}
+              onChange={(e) => setTitleEn(e.target.value)}
+              placeholder="e.g., Black Cat"
+              className="bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-black outline-none focus:border-black w-80 placeholder:text-gray-400"
             />
           </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Назва (Українська)
+            </label>
+            <input
+              value={titleUk}
+              onChange={(e) => setTitleUk(e.target.value)}
+              placeholder="напр., Чорний кіт"
+              className="bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-black outline-none focus:border-black w-80 placeholder:text-gray-400"
+            />
+          </div>
+        </div>
 
           <div className="flex gap-6">
             <div>
@@ -143,9 +162,9 @@ export default function EditPuzzlePage() {
 
         <div className="flex items-center gap-4">
           <button
-            onClick={submit}
-            disabled={saving}
-            className="bg-black text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50"
+          onClick={submit}
+          disabled={loading}
+          className="bg-white text-black font-semibold px-6 py-2.5 rounded-lg hover:bg-zinc-200 transition-colors disabled:opacity-50"
           >
             {saving ? t("saving") : t("saveChanges")}
           </button>
@@ -159,6 +178,6 @@ export default function EditPuzzlePage() {
 
         {error && <p className="text-red-400 text-sm mt-4">{error}</p>}
       </div>
-    </div>
+    // </div>
   );
 }

@@ -4,10 +4,16 @@ import { Link, useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { getMyPuzzles, deletePuzzle } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
+import { useLocale } from "next-intl";
+
+interface LocalizedString {
+  en: string;
+  uk: string;
+}
 
 interface Puzzle {
   id: number;
-  title: string;
+  title: LocalizedString;
   author_username: string;
   hor_size: number;
   ver_size: number;
@@ -24,6 +30,7 @@ const difficultyColor: Record<string, string> = {
 
 export default function MyPuzzlesPage() {
   const t = useTranslations("MyPuzzles");
+  const locale = useLocale() as "en" | "uk";
   const router = useRouter();
   const { user, isCreator } = useAuth();
   const [puzzles, setPuzzles] = useState<Puzzle[]>([]);
@@ -83,7 +90,7 @@ export default function MyPuzzlesPage() {
               className="bg-white border border-gray-300 rounded-2xl px-5 py-4 flex items-center justify-between"
             >
               <div>
-                <h2 className="font-semibold text-black mb-1">{puzzle.title}</h2>
+                <h2 className="font-semibold text-black mb-1">{puzzle.title[locale] || puzzle.title.en}</h2>
                 <div className="text-gray-600 text-sm">
                   {puzzle.hor_size}×{puzzle.ver_size} · {t("authorPrefix")} {puzzle.author_username} ·{" "}
                   <span className={difficultyColor[puzzle.difficulty] || "text-gray-600"}>

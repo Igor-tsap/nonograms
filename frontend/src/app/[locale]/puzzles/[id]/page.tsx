@@ -1,4 +1,5 @@
 "use client";
+import { useLocale } from "next-intl";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams } from "next/navigation";
 
@@ -10,7 +11,10 @@ import { useTranslations } from "next-intl";
 
 interface Puzzle {
   id: number;
-  title: string;
+  title: {
+    en: string;
+    uk: string;
+  };
   author_username: string;
   hor_size: number;
   ver_size: number;
@@ -27,6 +31,7 @@ interface Attempt {
 }
 
 export default function PuzzlePage() {
+  const locale = useLocale() as "en" | "uk"; 
   const t = useTranslations("PuzzleId");
   const { id } = useParams();
   const { user } = useAuth();
@@ -38,6 +43,7 @@ export default function PuzzlePage() {
   const [completedRowClues, setCompletedRowClues] = useState<Set<string>>(new Set());
   const [completedColClues, setCompletedColClues] = useState<Set<string>>(new Set());
   const [painting, setPainting] = useState<number | null>(null);
+  const displayTitle = puzzle?.title?.[locale] || puzzle?.title?.en || "";
   const chatSidebar = useMemo(() => (
     <ChatProvider roomId={String(id)}>
       <ChatWindow currentUsername={user?.name ?? t("anonymous")} />
@@ -127,7 +133,7 @@ export default function PuzzlePage() {
       <section className="flex-1 overflow-auto px-8">
         <div className="py-10">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight mb-1">{puzzle.title}</h1>
+            <h1 className="text-3xl font-bold tracking-tight mb-1">{displayTitle}</h1>
             <p className="text-gray-600 text-sm">
               {puzzle.hor_size}×{puzzle.ver_size} · {t(`difficulties.${puzzle.difficulty}`)} · {t("authorPrefix")} {puzzle.author_username}
             </p>
