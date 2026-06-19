@@ -52,22 +52,20 @@
 
     "EditPuzzle": {
         "editPuzzle": "Редагувати пазл",
-        "title": "Назва",
         "columns": "Стовпці",
         "rows": "Рядки",
         "saveChanges": "Зберегти зміни",
         "saving": "Збереження...",
         "cancel": "Скасувати",
         "loadingPuzzleData": "Завантаження даних пазла...",
-        "titleRequired": "Назва обов'язкова",
+        "titleRequired": "Обидві назви (англійська та українська) обов'язкові",
         "notCreator": "Доступ тільки для авторів"
     },
 
     "CreatePuzzle": {
-        "titleRequired": "Назва обов'язкова",
+        "titleRequired": "Обидві назви (англійська та українська) обов'язкові",
         "createPuzzle": "Створити пазл",
         "defaultPuzzleName": "Назва пазла...",
-        "title": "Назва",
         "columns": "Стовпці",
         "rows": "Рядки",
         "creating": "Створення...",

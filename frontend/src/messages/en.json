@@ -52,23 +52,21 @@
 
     "EditPuzzle": {
         "editPuzzle": "Edit Puzzle",
-        "title": "Title",
         "columns": "Columns",
         "rows": "Rows",
         "saveChanges": "Save Changes",
         "saving": "Saving...",
         "cancel": "Cancel",
         "loadingPuzzleData": "Loading puzzle data...",
-        "titleRequired": "Title is required",
+        "titleRequired": "Both English and Ukrainian titles are required.",
         "notCreator": "Creator access required"
 
     },
 
     "CreatePuzzle": {
-        "titleRequired": "Title is required",
+        "titleRequired": "Both English and Ukrainian titles are required.",
         "createPuzzle": "Create Puzzle",
         "defaultPuzzleName": "Puzzle name...",
-        "title": "Title",
         "columns": "Columns",
         "rows": "Rows",
         "creating": "Creating...",
