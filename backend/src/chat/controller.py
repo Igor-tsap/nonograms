@@ -28,13 +28,18 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, locale: str = "
     try:
         while True:
                 data = await websocket.receive_text()
-                # await connection_manager.broadcast_local(f"{username}: {data}", room_id)
-                # await service.publish_chat_message(room_id, f"{username}: {data}")
-                await service.publish_chat_message(room_id, json.dumps({"username": username, "message": data}))
 
-                async with AsyncSessionLocal() as db:
-                    msg_data = ChatMessageCreate(username=username, message=data)
-                    await service.create_chat_message(db, room_id, msg_data)
+                if data.strip().startswith("@ai"):
+                     await service.publish_chat_message(room_id, json.dumps({"username": username, "message": data}))
+                     await service.handle_ai_message(room_id, username, data, locale=locale)
+                else:
+                    # await connection_manager.broadcast_local(f"{username}: {data}", room_id)
+                    # await service.publish_chat_message(room_id, f"{username}: {data}")
+                    await service.publish_chat_message(room_id, json.dumps({"username": username, "message": data}))
+
+                    async with AsyncSessionLocal() as db:
+                        msg_data = ChatMessageCreate(username=username, message=data)
+                        await service.create_chat_message(db, room_id, msg_data)
                 
     except WebSocketDisconnect:
             connection_manager.disconnect(websocket, room_id)
