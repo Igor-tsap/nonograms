@@ -7,6 +7,9 @@ from sqlalchemy import select, desc
 from .model import ChatMessage as ChatMessageModel
 from .schema import ChatMessageCreate
 from database.redis import redis
+from .ai_service import get_ai_response
+import json
+
 
 BACKEND_MESAGES = {
     "en": {"anonymous": "Anonymous"},
@@ -57,3 +60,14 @@ async def create_chat_message(db: AsyncSession, room_id: str, message_data: Chat
     await db.commit()
     await db.refresh(db_message)
     return db_message
+
+
+async def handle_ai_message(room_id: str, username: str, user_message: str, locale: str = "en"):
+    query = user_message[3:].strip()
+    ai_response = await get_ai_response(query, username, locale)
+    
+    payload = json.dumps({
+        "username": "NonoGemini",
+        "message": ai_response
+    })
+    await publish_chat_message(room_id, payload)
